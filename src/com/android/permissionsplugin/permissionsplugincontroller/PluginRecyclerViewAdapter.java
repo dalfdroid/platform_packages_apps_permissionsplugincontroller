@@ -11,15 +11,15 @@ import com.android.permissionsplugin.permissionsplugincontroller.PluginFragment.
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link PluginInfo} and makes a call to the
+ * {@link RecyclerView.Adapter} that can display a {@link PluginParser.Plugin} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
  */
 public class PluginRecyclerViewAdapter extends RecyclerView.Adapter<PluginRecyclerViewAdapter.ViewHolder> {
 
-    private final List<PluginInfo> mValues;
+    private final List<PluginParser.Plugin> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public PluginRecyclerViewAdapter(List<PluginInfo> items, OnListFragmentInteractionListener listener) {
+    public PluginRecyclerViewAdapter(List<PluginParser.Plugin> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -34,8 +34,8 @@ public class PluginRecyclerViewAdapter extends RecyclerView.Adapter<PluginRecycl
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).packageName);
+        holder.mIdView.setText(mValues.get(position).packageName);
+        holder.mContentView.setText(mValues.get(position).supportedAPIs.get(0));
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,7 +58,7 @@ public class PluginRecyclerViewAdapter extends RecyclerView.Adapter<PluginRecycl
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
-        public PluginInfo mItem;
+        public PluginParser.Plugin mItem;
 
         public ViewHolder(View view) {
             super(view);

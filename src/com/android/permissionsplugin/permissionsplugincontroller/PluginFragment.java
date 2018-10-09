@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,6 +12,8 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.List;
+
+
 
 /**
  * A fragment representing a list of Items.
@@ -25,7 +26,9 @@ public class PluginFragment extends Fragment {
     private OnListFragmentInteractionListener mListener;
 
     // Holds information about existing plugins
-    private ArrayList<PluginInfo> mPluginList;
+    private ArrayList<PluginParser.Plugin> mPluginList;
+
+    private PluginParser mPluginParser;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -38,6 +41,10 @@ public class PluginFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Initialize plugin parser
+        mPluginParser = new PluginParser(getActivity().getPackageManager());
+
+        // Populate plugin list
         populatePluginList();
     }
 
@@ -80,10 +87,17 @@ public class PluginFragment extends Fragment {
         List<PackageInfo> packages = getActivity().getPackageManager().getInstalledPackages(0);
         for(int i=0; i< packages.size(); i++){
             PackageInfo pkg = packages.get(i);
+
+            // Skip packages that are not plugin
             if(!pkg.isPermissionsPlugin){
                 continue;
             }
-            mPluginList.add(new PluginInfo(String.valueOf(i),pkg.packageName));
+
+            // Parse package to extract plugin information
+            PluginParser.Plugin plugin  = mPluginParser.parsePlugin(pkg.packageName);
+            if(plugin != null){
+                mPluginList.add(plugin);
+            }
         }
     }
 
@@ -98,6 +112,6 @@ public class PluginFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(PluginInfo item);
+        void onListFragmentInteraction(PluginParser.Plugin item);
     }
 }

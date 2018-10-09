@@ -17,10 +17,8 @@ public class PermissionsPluginControllerActivity extends AppCompatActivity imple
     }
 
     @Override
-    public void onListFragmentInteraction(PluginInfo item) {
-        Log.i(TAG,"Id: "+item.id);
-        Log.i(TAG,"Content: "+item.packageName);
-        Log.i(TAG,"String:"+item.toString());
+    public void onListFragmentInteraction(PluginParser.Plugin item) {
+        Log.i(TAG,"Plugin:"+item.toString());
     }
 
 }
