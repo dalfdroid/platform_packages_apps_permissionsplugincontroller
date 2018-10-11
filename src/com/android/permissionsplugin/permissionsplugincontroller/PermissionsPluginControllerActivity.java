@@ -9,6 +9,8 @@ public class PermissionsPluginControllerActivity extends AppCompatActivity imple
 
     private static final String TAG = "PermissionsPluginControllerActivity";
 
+    private static final Boolean DEBUG = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -17,8 +19,21 @@ public class PermissionsPluginControllerActivity extends AppCompatActivity imple
     }
 
     @Override
-    public void onListFragmentInteraction(PluginParser.Plugin item) {
-        Log.i(TAG,"Plugin:"+item.toString());
+    public void onListFragmentInteraction(PluginParser.Plugin plugin) {
+        if(DEBUG) {
+            Log.i(TAG, "Plugin interaction:" + plugin.packageName);
+        }
+    }
+
+    @Override
+    public void onPluginActivation(PluginParser.Plugin plugin) {
+        if(DEBUG) {
+            Log.i(TAG, "Plugin activation:" + plugin.packageName + ":" + plugin.isActive);
+        }
+
+        // update plugin
+        PluginFragment fragment = (PluginFragment) getSupportFragmentManager().findFragmentById(R.id.plugin_fragment);
+        fragment.updatePlugin(plugin);
     }
 
 }

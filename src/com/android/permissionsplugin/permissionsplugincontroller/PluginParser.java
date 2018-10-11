@@ -81,6 +81,9 @@ public class PluginParser {
                 plugin.supportedAPIs.add(supportedAPIs.getString(i));
             }
 
+            // Newly loaded plugin is by default inactive until user explicitly activate it
+            plugin.isActive = false;
+
         }catch (Exception e){
             Log.e(TAG, "Exception while parsing the plugin package: " + packageName + " : " + e);
             e.printStackTrace();
@@ -90,6 +93,9 @@ public class PluginParser {
     }
 
     public static class Plugin{
+
+        // Plugin ID retrieved from the plugin db
+        public long id;
 
         // Package name of the plugin
         public String packageName;
@@ -105,6 +111,9 @@ public class PluginParser {
 
         // Apis supported by this plugin
         public ArrayList<String> supportedAPIs;
+
+        // Flag to check if plugin is active
+        public Boolean isActive;
 
 //        // Apps selected by user to apply this plugin to
 //        // must be a subset of the supportedPackages

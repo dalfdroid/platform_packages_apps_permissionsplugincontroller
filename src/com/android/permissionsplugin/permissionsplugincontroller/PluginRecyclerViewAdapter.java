@@ -4,6 +4,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.android.permissionsplugin.permissionsplugincontroller.PluginFragment.OnListFragmentInteractionListener;
@@ -33,9 +35,10 @@ public class PluginRecyclerViewAdapter extends RecyclerView.Adapter<PluginRecycl
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).packageName);
-        holder.mContentView.setText(mValues.get(position).supportedAPIs.get(0));
+        PluginParser.Plugin plugin = mValues.get(position);
+        holder.mPlugin = plugin;
+        holder.mPackageNameView.setText(plugin.packageName);
+        holder.mIsActiveView.setChecked(plugin.isActive);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,8 +46,17 @@ public class PluginRecyclerViewAdapter extends RecyclerView.Adapter<PluginRecycl
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
+                    mListener.onListFragmentInteraction(holder.mPlugin);
                 }
+            }
+        });
+
+        // Register listener for active switch
+        holder.mIsActiveView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // Update plugin activation and notify the callback interface
+                holder.mPlugin.isActive = isChecked;
+                mListener.onPluginActivation(holder.mPlugin);
             }
         });
     }
@@ -56,20 +68,20 @@ public class PluginRecyclerViewAdapter extends RecyclerView.Adapter<PluginRecycl
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mIdView;
-        public final TextView mContentView;
-        public PluginParser.Plugin mItem;
+        public final TextView mPackageNameView;
+        public final Switch mIsActiveView;
+        public PluginParser.Plugin mPlugin;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.item_number);
-            mContentView = (TextView) view.findViewById(R.id.content);
+            mPackageNameView = (TextView) view.findViewById(R.id.plugin_name);
+            mIsActiveView = (Switch) view.findViewById(R.id.plugin_active);
         }
 
         @Override
         public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
+            return super.toString() + " '" + mPackageNameView.getText() + "'";
         }
     }
 }
