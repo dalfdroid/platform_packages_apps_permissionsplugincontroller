@@ -1,3 +1,5 @@
+rm -r ~/Projects/Heimdall/tmp/*
+
 mv src/com ~/Projects/Heimdall/tmp/
 mv res ~/Projects/Heimdall/tmp/
 

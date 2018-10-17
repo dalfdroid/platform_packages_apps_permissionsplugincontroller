@@ -8,20 +8,22 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.android.permissionsplugin.PermissionsPlugin;
+
 import com.android.permissionsplugin.permissionsplugincontroller.PluginFragment.OnListFragmentInteractionListener;
 
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link PluginParser.Plugin} and makes a call to the
+ * {@link RecyclerView.Adapter} that can display a {@link PermissionsPlugin} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
  */
 public class PluginRecyclerViewAdapter extends RecyclerView.Adapter<PluginRecyclerViewAdapter.ViewHolder> {
 
-    private final List<PluginParser.Plugin> mValues;
+    private final List<PermissionsPlugin> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public PluginRecyclerViewAdapter(List<PluginParser.Plugin> items, OnListFragmentInteractionListener listener) {
+    public PluginRecyclerViewAdapter(List<PermissionsPlugin> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -35,7 +37,7 @@ public class PluginRecyclerViewAdapter extends RecyclerView.Adapter<PluginRecycl
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        PluginParser.Plugin plugin = mValues.get(position);
+        PermissionsPlugin plugin = mValues.get(position);
         holder.mPlugin = plugin;
         holder.mPackageNameView.setText(plugin.packageName);
         holder.mIsActiveView.setChecked(plugin.isActive);
@@ -70,7 +72,7 @@ public class PluginRecyclerViewAdapter extends RecyclerView.Adapter<PluginRecycl
         public final View mView;
         public final TextView mPackageNameView;
         public final Switch mIsActiveView;
-        public PluginParser.Plugin mPlugin;
+        public PermissionsPlugin mPlugin;
 
         public ViewHolder(View view) {
             super(view);

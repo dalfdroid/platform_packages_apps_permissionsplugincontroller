@@ -4,6 +4,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.android.permissionsplugin.PermissionsPlugin;
+
 
 public class PermissionsPluginControllerActivity extends AppCompatActivity implements PluginFragment.OnListFragmentInteractionListener {
 
@@ -19,21 +21,23 @@ public class PermissionsPluginControllerActivity extends AppCompatActivity imple
     }
 
     @Override
-    public void onListFragmentInteraction(PluginParser.Plugin plugin) {
+    public void onListFragmentInteraction(PermissionsPlugin plugin) {
         if(DEBUG) {
             Log.i(TAG, "Plugin interaction:" + plugin.packageName);
         }
     }
 
     @Override
-    public void onPluginActivation(PluginParser.Plugin plugin) {
+    public void onPluginActivation(PermissionsPlugin plugin) {
         if(DEBUG) {
             Log.i(TAG, "Plugin activation:" + plugin.packageName + ":" + plugin.isActive);
         }
 
         // update plugin
-        PluginFragment fragment = (PluginFragment) getSupportFragmentManager().findFragmentById(R.id.plugin_fragment);
-        fragment.updatePlugin(plugin);
+        boolean res = getPackageManager().setActivationStatusForPermissionsPlugin(plugin.packageName,plugin.isActive);
+        if(!res){
+            Log.e(TAG,"Failed to update activation status for plugin "+plugin.packageName);
+        }
     }
 
 }
