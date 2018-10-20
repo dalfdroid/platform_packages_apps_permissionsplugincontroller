@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">PermissionsPluginController</string>
+    <string name="title_permissionsplugin_detail">PermissionsPlugin Detail</string>
+
+    <string name="is_active">Active</string>
+    <string name="supported_packages">Target apps</string>
+    <string name="supported_api">Target APIs</string>
+
 </resources>
