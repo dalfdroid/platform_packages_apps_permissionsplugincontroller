@@ -48,5 +48,10 @@ public class PackageManagerBridge {
         return pm.removeTargetAPIsForPlugin(pluginPackage, targetAPIs);
     }
 
+    public static List<String> getInstalledUntrustedPackages(PackageManager pm){
+        Log.i(TAG,"getInstalledUntrustedPackages");
+	return pm.getInstalledUntrustedPackages();
+    }
+
 }
 

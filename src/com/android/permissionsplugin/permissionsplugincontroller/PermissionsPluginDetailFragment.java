@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.android.permissionsplugin.PermissionsPlugin;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -115,6 +116,7 @@ public class PermissionsPluginDetailFragment extends Fragment {
          * plugin.supportedPackages
          * Second group is packages supported by plugin.
          * The selected children of this group indicates target packages
+         * TODO: Handle select all functionality
          */
         listDataGroup.add(getResources().getString(R.string.supported_packages));
         List<String> packagesChildren = new ArrayList<>(mPlugin.supportedPackages);
@@ -122,23 +124,26 @@ public class PermissionsPluginDetailFragment extends Fragment {
         // Add all installed packages in the system if supported packages has "*"
         // Do not remove '*' as it is used to select all packages
         if(packagesChildren.contains(PermissionsPlugin.ALL_PACKAGES)){
-            List<PackageInfo> installedPackages = getActivity().getPackageManager().getInstalledPackages(0);
-            for(PackageInfo pkg : installedPackages){
+            List<String> packages = PackageManagerBridge.getInstalledUntrustedPackages(getActivity().getPackageManager());
+            for(String p : packages){
                 // Do not add duplicate packages
-                if(!packagesChildren.contains(pkg.packageName)){
-                    packagesChildren.add(pkg.packageName);
+                if(!packagesChildren.contains(p)){
+                    packagesChildren.add(p);
                 }
             }
         }
+        Collections.sort(packagesChildren);
         listDataChild.put(GROUP_POSITION_SUPPORTED_PACKAGES,packagesChildren);
 
         /**
          * plugin.supportedAPIs
          * Second group is APIs supported by plugin.
          * The selected children of this group indicates target APIs
+         * TODO: Handle select all functionality
          */
         listDataGroup.add(getResources().getString(R.string.supported_api));
         List<String> apisChildren = new ArrayList<>(mPlugin.supportedAPIs);
+        Collections.sort(apisChildren);
         listDataChild.put(GROUP_POSITION_SUPPORTED_APIS,apisChildren);
 
         // Initialize data adapter and populate list view
