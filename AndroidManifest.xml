@@ -11,21 +11,25 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".PermissionsPluginControllerActivity">
+        <activity
+            android:name=".PermissionsPluginListActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <provider
-            android:name=".PluginProvider"
-            android:authorities="com.android.permissionsplugin.premissionsplugincontroller.provider"
-	    android:grantUriPermissions="true"
-            android:enabled="true"
-            android:exported="true"></provider>
-
+        <activity
+            android:name=".PermissionsPluginDetailActivity"
+            android:label="@string/title_permissionsplugin_detail"
+            android:parentActivityName=".PermissionsPluginListActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.android.permissionsplugin.permissionsplugincontroller.PermissionsPluginListActivity" />
+        </activity>
     </application>
 
 </manifest>
