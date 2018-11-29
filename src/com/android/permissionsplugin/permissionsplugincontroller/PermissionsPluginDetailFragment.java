@@ -44,13 +44,6 @@ public class PermissionsPluginDetailFragment extends Fragment {
      */
     private PermissionsPlugin mPlugin;
 
-    /**
-     * List of constants to identify group type w.r.t group position
-     */
-    public static final int GROUP_POSITION_IS_ACTIVE = 0;
-    public static final int GROUP_POSITION_SUPPORTED_PACKAGES = 1;
-    public static final int GROUP_POSITION_SUPPORTED_APIS = 2;
-
     private ExpandableListView expandableListView;
 
     private PermissionsPluginDetailViewAdapter expandableListViewAdapter;
@@ -103,48 +96,16 @@ public class PermissionsPluginDetailFragment extends Fragment {
 
     private void loadPluginDetails(){
 
-        /**
-         * plugin.is_active
-         * First group is plugin activation status.
-         * This group does not have any child
-         */
-        listDataGroup.add(getResources().getString(R.string.is_active));
-        List<String> activationChildren = new ArrayList<>();
-        listDataChild.put(GROUP_POSITION_IS_ACTIVE,activationChildren);
-
-        /**
-         * plugin.supportedPackages
-         * Second group is packages supported by plugin.
-         * The selected children of this group indicates target packages
-         * TODO: Handle select all functionality
-         */
-        listDataGroup.add(getResources().getString(R.string.supported_packages));
-        List<String> packagesChildren = new ArrayList<>(mPlugin.supportedPackages);
-
-        // Add all installed packages in the system if supported packages has "*"
-        // Do not remove '*' as it is used to select all packages
-        if(packagesChildren.contains(PermissionsPlugin.ALL_PACKAGES)){
-            List<String> packages = PackageManagerBridge.getInstalledUntrustedPackages(getActivity().getPackageManager());
-            for(String p : packages){
-                // Do not add duplicate packages
-                if(!packagesChildren.contains(p)){
-                    packagesChildren.add(p);
-                }
-            }
+        // Construct a data group for each supported package.
+        // The children of each data group are the supported APIs.
+        // Activate/deactivate an API/package based on user selection.
+        int nPackages = mPlugin.supportedPackages.size();
+        for (int i=0; i<nPackages; i++) {
+            String supportedPackage = mPlugin.supportedPackages.get(i);
+            listDataGroup.add(supportedPackage);
+            List<String> listChildren = new ArrayList<>(mPlugin.supportedAPIs);
+            listDataChild.put(i,listChildren);
         }
-        Collections.sort(packagesChildren);
-        listDataChild.put(GROUP_POSITION_SUPPORTED_PACKAGES,packagesChildren);
-
-        /**
-         * plugin.supportedAPIs
-         * Second group is APIs supported by plugin.
-         * The selected children of this group indicates target APIs
-         * TODO: Handle select all functionality
-         */
-        listDataGroup.add(getResources().getString(R.string.supported_api));
-        List<String> apisChildren = new ArrayList<>(mPlugin.supportedAPIs);
-        Collections.sort(apisChildren);
-        listDataChild.put(GROUP_POSITION_SUPPORTED_APIS,apisChildren);
 
         // Initialize data adapter and populate list view
         expandableListViewAdapter = new PermissionsPluginDetailViewAdapter(getActivity(), listDataGroup, listDataChild, mPlugin);

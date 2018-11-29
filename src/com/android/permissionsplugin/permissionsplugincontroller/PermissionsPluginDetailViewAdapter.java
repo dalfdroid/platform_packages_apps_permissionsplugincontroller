@@ -81,37 +81,9 @@ public class PermissionsPluginDetailViewAdapter extends BaseExpandableListAdapte
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
 
         LayoutInflater layoutInflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        TextView textViewGroup;
 
-        // Setup appropriate view based on group content
-        switch (groupPosition){
-            case PermissionsPluginDetailFragment.GROUP_POSITION_IS_ACTIVE:
-                convertView = layoutInflater.inflate(R.layout.plugindetail_group_switch, null);
-                textViewGroup = convertView.findViewById(R.id.plugindetail_group_switch_text);
-
-                // Set activation status for this plugin
-                Switch isActiveSwitch = convertView.findViewById(R.id.plugindetail_group_switch_box);
-                isActiveSwitch.setChecked(mPlugin.isActive);
-
-                // Set up listener
-                isActiveSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        mPlugin.isActive = isChecked;
-                        PackageManagerBridge.setActivationStatusForPermissionsPlugin(context.getPackageManager(), mPlugin.packageName,mPlugin.isActive);
-                    }
-                });
-
-                break;
-            case PermissionsPluginDetailFragment.GROUP_POSITION_SUPPORTED_PACKAGES:
-            case PermissionsPluginDetailFragment.GROUP_POSITION_SUPPORTED_APIS:
-                convertView = layoutInflater.inflate(R.layout.plugindetail_group_check, null);
-                textViewGroup  = convertView.findViewById(R.id.plugindetail_group_check_text);
-                break;
-            default:
-                Log.e(TAG,"Unknown group position " + groupPosition);
-                throw new IllegalArgumentException();
-        }
+        convertView = layoutInflater.inflate(R.layout.plugindetail_group_check, null);
+        TextView textViewGroup  = convertView.findViewById(R.id.plugindetail_group_check_text);
 
         final String headerTitle = (String) getGroup(groupPosition);
 
@@ -128,71 +100,26 @@ public class PermissionsPluginDetailViewAdapter extends BaseExpandableListAdapte
         LayoutInflater layoutInflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final String childText = (String) getChild(groupPosition, childPosition);
 
-        TextView textViewChild;
+        convertView = layoutInflater.inflate(R.layout.plugindetail_child_check, null);
+        TextView textViewChild  = convertView.findViewById(R.id.plugindetail_child_check_text);
 
-        // Setup appropriate view based on group content
-        switch (groupPosition){
-            case PermissionsPluginDetailFragment.GROUP_POSITION_SUPPORTED_PACKAGES:
-                convertView = layoutInflater.inflate(R.layout.plugindetail_child_check, null);
-                textViewChild  = convertView.findViewById(R.id.plugindetail_child_check_text);
-
-                // Select target packages
-                final CheckBox pkgCheckView = convertView.findViewById(R.id.plugindetail_child_check_box);
-                if(mPlugin.targetPackages.contains(PermissionsPlugin.ALL_PACKAGES) ||
-                        mPlugin.targetPackages.contains(childText)){
-                    pkgCheckView.setChecked(true);
-                }
-
-                // Setup listener
-                pkgCheckView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        List<String> targetPackages = new ArrayList<>();
-                        targetPackages.add(childText);
-                        if(isChecked){
-                            // Add this package to the list of target packages
-                            PackageManagerBridge.addTargetPackagesForPlugin(context.getPackageManager(),mPlugin.packageName,targetPackages,false);
-                        }else{
-                            // Remove this package from the list of target packages
-                            PackageManagerBridge.removeTargetPackagesForPlugin(context.getPackageManager(),mPlugin.packageName,targetPackages);
-                        }
-                    }
-                });
-
-                break;
-            case PermissionsPluginDetailFragment.GROUP_POSITION_SUPPORTED_APIS:
-                convertView = layoutInflater.inflate(R.layout.plugindetail_child_check, null);
-                textViewChild  = convertView.findViewById(R.id.plugindetail_child_check_text);
-
-                // Select target apis
-                final CheckBox apiCheckView = convertView.findViewById(R.id.plugindetail_child_check_box);
-                if(mPlugin.targetAPIs.contains(childText)){
-                    apiCheckView.setChecked(true);
-                }
-
-                // Setup listener
-                apiCheckView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        List<String> targetAPIs = new ArrayList<>();
-                        targetAPIs.add(childText);
-                        if(isChecked){
-                            // Add this package to the list of target packages
-                            PackageManagerBridge.addTargetAPIsForPlugin(context.getPackageManager(),mPlugin.packageName,targetAPIs,false);
-                        }else{
-                            // Remove this package from the list of target packages
-                            PackageManagerBridge.removeTargetAPIsForPlugin(context.getPackageManager(),mPlugin.packageName,targetAPIs);
-                        }
-                    }
-                });
-
-
-                break;
-            default:
-                Log.e(TAG,"Unknown child position " + childPosition + " in group " + groupPosition);
-                throw new IllegalArgumentException();
+        // Select target apis
+        final CheckBox apiCheckView = convertView.findViewById(R.id.plugindetail_child_check_box);
+        final String targetPackageName = (String) getGroup(groupPosition);
+        if(mPlugin.targetPackageToAPIs.containsKey(targetPackageName) &&
+                mPlugin.targetPackageToAPIs.get(targetPackageName).contains(childText)){
+            apiCheckView.setChecked(true);
+        } else {
+            apiCheckView.setChecked(false);
         }
 
+        // Setup listener
+        apiCheckView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            PackageManagerBridge.activatePlugin(context.getPackageManager(),mPlugin.packageName,targetPackageName, childText,isChecked);
+            }
+        });
         textViewChild.setTypeface(null, Typeface.BOLD);
         textViewChild.setText(childText);
 

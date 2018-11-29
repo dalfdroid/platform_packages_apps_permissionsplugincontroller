@@ -133,16 +133,6 @@ public class PermissionsPluginListActivity extends AppCompatActivity {
             holder.itemView.setOnClickListener(mOnClickListener);
 
             holder.mPackageNameView.setText(plugin.packageName);
-            holder.mIsActiveSwitch.setChecked(plugin.isActive);
-
-            holder.mIsActiveSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    PermissionsPlugin plugin = (PermissionsPlugin) holder.itemView.getTag();
-                    plugin.isActive = isChecked;
-                    PackageManagerBridge.setActivationStatusForPermissionsPlugin(mParentActivity.getPackageManager(),plugin.packageName,plugin.isActive);
-                }
-            });
 
         }
 
@@ -153,12 +143,10 @@ public class PermissionsPluginListActivity extends AppCompatActivity {
 
         class ViewHolder extends RecyclerView.ViewHolder {
             final TextView mPackageNameView;
-            final Switch mIsActiveSwitch;
 
             ViewHolder(View view) {
                 super(view);
                 mPackageNameView = (TextView) view.findViewById(R.id.package_name);
-                mIsActiveSwitch = (Switch) view.findViewById(R.id.is_active);
             }
         }
     }
