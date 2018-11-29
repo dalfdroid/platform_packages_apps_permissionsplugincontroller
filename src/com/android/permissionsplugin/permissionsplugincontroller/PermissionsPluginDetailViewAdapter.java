@@ -82,8 +82,8 @@ public class PermissionsPluginDetailViewAdapter extends BaseExpandableListAdapte
 
         LayoutInflater layoutInflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        convertView = layoutInflater.inflate(R.layout.plugindetail_group_check, null);
-        TextView textViewGroup  = convertView.findViewById(R.id.plugindetail_group_check_text);
+        convertView = layoutInflater.inflate(R.layout.plugindetail_group, null);
+        TextView textViewGroup  = convertView.findViewById(R.id.plugindetail_group_text);
 
         final String headerTitle = (String) getGroup(groupPosition);
 
